@@ -3,38 +3,34 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 from io import BytesIO
+# import openai  # Uncomment this line if you're using OpenAI API
 
-# og:imageを取得する関数
-def fetch_og_image(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        og_image_tag = soup.find("meta", {"property": "og:image"})
-        if og_image_tag and 'content' in og_image_tag.attrs:
-            return og_image_tag['content']
-    return None
+# Streamlit Community Cloudの「Secrets」からOpenAI API keyを取得
+# openai.api_key = st.secrets.OpenAIAPI.openai_api_key  # Uncomment this line if you're using OpenAI API
 
 # サイトマップを取得する関数
 def fetch_sitemap(url, is_wordpress):
-    sitemap = []
     if is_wordpress:
         sitemap_url = f"{url}/wp-json/wp/v2/posts"
         response = requests.get(sitemap_url)
         if response.status_code == 200:
             posts = response.json()
+            sitemap = []
             for post in posts:
                 post_url = post.get("link", "")
-                og_image = fetch_og_image(post_url)
+                og_image = post.get("_embedded", {}).get("wp:featuredmedia", [{}])[0].get("source_url", "")
                 sitemap.append({"URL": post_url, "og:image": og_image})
+            return sitemap
     else:
         response = requests.get(url)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
+            sitemap = []
             for a_tag in soup.find_all('a', href=True):
                 link = a_tag['href']
-                og_image = fetch_og_image(link)
-                sitemap.append({"URL": link, "og:image": og_image})
-    return sitemap if sitemap else None
+                sitemap.append({"URL": link, "og:image": ""})
+            return sitemap
+    return None
 
 # ユーザーがURLを入力
 user_input_url = st.text_input("URLを入力してください:")
@@ -61,3 +57,6 @@ if user_input_url:
     else:
         st.write("サイトマップを取得できませんでした。")
 
+# 以下は元のコード（質問応答部分）です。
+# （この部分は変更していません。）
+# ...
