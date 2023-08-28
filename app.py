@@ -48,7 +48,7 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 # ユーザーインターフェイスの構築
-st.image("sitemap.jpg")
+st.image("sitemap.png")
 st.markdown("<p style='font-size:14px;'><br>サイトマップを自動抽出したいサイトのURLを入力してください。<br>※サイトがWordPressで作られている場合はチェックをいれてください。</p>", unsafe_allow_html=True)
 
 # ユーザーがURLを入力
