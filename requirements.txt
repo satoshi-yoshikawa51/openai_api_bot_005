@@ -1,3 +1,5 @@
 streamlit==1.20.0
 openai
-beautifulsoup4 pandas
+beautifulsoup4
+requests
+pandas
