@@ -32,8 +32,27 @@ def fetch_sitemap(url, is_wordpress):
             return sitemap
     return None
 
+# カスタムスタイルを適用するためのHTMLコード
+custom_css = """
+<style>
+    .reportview-container .main .block-container {
+        background-color: #689F91; /* ここで背景色を指定 */
+    }
+    .stTextInput input {
+        color: black;
+    }
+</style>
+"""
+
+# カスタムスタイルを適用
+st.markdown(custom_css, unsafe_allow_html=True)
+
+# ユーザーインターフェイスの構築
+st.image("sitmap.jpg")
+st.markdown("<p style='font-size:14px;'><br>サイトマップを自動抽出したいサイトのURLを入力してください。<br>※サイトがWordPressで作られている場合はチェックをいれてください。</p>", unsafe_allow_html=True)
+
 # ユーザーがURLを入力
-user_input_url = st.text_input("URLを入力してください:")
+user_input_url = st.text_input("")
 is_wordpress = st.checkbox("WordPressサイトですか？")
 
 # URLが入力されたらサイトマップを取得
