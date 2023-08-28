@@ -2,7 +2,8 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-import openai
+from io import BytesIO
+# import openai  # Uncomment this line if you're using OpenAI API
 
 # Streamlit Community Cloudの「Secrets」からOpenAI API keyを取得
 # openai.api_key = st.secrets.OpenAIAPI.openai_api_key  # Uncomment this line if you're using OpenAI API
@@ -43,10 +44,13 @@ if user_input_url:
         df = pd.DataFrame(sitemap_data)
         
         # DataFrameをExcelに出力
-        excel_file = df.to_excel(index=False)
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False)
+        excel_data = output.getvalue()
         
         # Excelファイルをダウンロードリンクとして表示
-        st.download_button("Excelファイルをダウンロード", excel_file, "sitemap.xlsx")
+        st.download_button("Excelファイルをダウンロード", excel_data, "sitemap.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         
         # DataFrameをStreamlitアプリに表示
         st.write(df)
